@@ -7,8 +7,12 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {
+            // Day 1
             Console.WriteLine(String.Format("Day 1 p. 1: {0}", Get2020PairProduct()));
             Console.WriteLine(String.Format("Day 1 p. 2: {0}", Get2020ThreeProduct()));
+
+            // Day 2
+            Console.WriteLine(String.Format("Day 2 p. 1: {0}", CheckValidPasswords()));
         }
 
         static int Get2020PairProduct()
@@ -62,6 +66,31 @@ namespace AdventOfCode2020
             }
 
             return 0;
+        }
+
+        static int CheckValidPasswords()
+        {
+            string filename = "day2inputs.txt";
+            int valid = 0;
+
+            string[] contents = File.ReadAllLines(filename);
+            foreach (string line in contents)
+            {
+                string[] dat = line.Split(" ");
+                string[] minmax = dat[0].Split("-");
+
+                char c = dat[1][0];
+                int min = Convert.ToInt32(minmax[0]);
+                int max = Convert.ToInt32(minmax[1]);
+                int count = dat[2].Split(c).Length - 1;
+
+                if (count >= min && count <= max)
+                {
+                    valid++;
+                }
+            }
+
+            return valid;
         }
     }
 }
