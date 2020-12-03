@@ -14,6 +14,9 @@ namespace AdventOfCode2020
             // Day 2
             Console.WriteLine(String.Format("Day 2 p. 1: {0}", CheckValidPasswords()));
             Console.WriteLine(String.Format("Day 2 p. 2: {0}", CheckValidPasswords(true)));
+
+            // Day 3
+            Console.WriteLine(String.Format("Day 3 p. 1: {0}", FindTrees()));
         }
 
         static int Get2020PairProduct()
@@ -92,6 +95,37 @@ namespace AdventOfCode2020
             }
 
             return valid;
+        }
+
+        static int FindTrees()
+        {
+            string filename = "day3inputs.txt";
+            int trees = 0;
+
+            string[] contents = File.ReadAllLines(filename);
+            int linelength = contents[0].Length;
+            int pos = 3;
+            int linenum = 0;
+
+            foreach (string line in contents)
+            {
+                if (linenum > 0)
+                {
+                    char c = line[pos];
+                    Console.WriteLine(pos);
+
+                    if (c == '#')
+                    {
+                        trees++;
+                    }
+
+                    pos = ((pos + 3) >= linelength) ? (3 - (linelength - pos)) : pos + 3;
+                }
+
+                linenum++;
+            }
+
+            return trees;
         }
     }
 }
