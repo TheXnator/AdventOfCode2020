@@ -13,6 +13,7 @@ namespace AdventOfCode2020
 
             // Day 2
             Console.WriteLine(String.Format("Day 2 p. 1: {0}", CheckValidPasswords()));
+            Console.WriteLine(String.Format("Day 2 p. 2: {0}", CheckValidPasswords(true)));
         }
 
         static int Get2020PairProduct()
@@ -68,7 +69,7 @@ namespace AdventOfCode2020
             return 0;
         }
 
-        static int CheckValidPasswords()
+        static int CheckValidPasswords(bool isnew=false)
         {
             string filename = "day2inputs.txt";
             int valid = 0;
@@ -84,7 +85,7 @@ namespace AdventOfCode2020
                 int max = Convert.ToInt32(minmax[1]);
                 int count = dat[2].Split(c).Length - 1;
 
-                if (count >= min && count <= max)
+                if ((!isnew && count >= min && count <= max) || (isnew && ((dat[2][min-1] == c && dat[2][max-1] != c) || (dat[2][max - 1] == c && dat[2][min - 1] != c))))
                 {
                     valid++;
                 }
