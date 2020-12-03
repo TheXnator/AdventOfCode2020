@@ -16,7 +16,9 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 2 p. 2: {0}", CheckValidPasswords(true)));
 
             // Day 3
-            Console.WriteLine(String.Format("Day 3 p. 1: {0}", FindTrees()));
+            Console.WriteLine(String.Format("Day 3 p. 1: {0}", FindTrees(3, 1)));
+            ulong treeproduct = FindTrees(1, 1) * FindTrees(3, 1) * FindTrees(5, 1) * FindTrees(7, 1) * FindTrees(1, 2);
+            Console.WriteLine(String.Format("Day 3 p. 2: {0}", treeproduct));
         }
 
         static int Get2020PairProduct()
@@ -39,7 +41,7 @@ namespace AdventOfCode2020
                     }
                 }
             }
-
+            
             return 0;
         }
 
@@ -97,32 +99,26 @@ namespace AdventOfCode2020
             return valid;
         }
 
-        static int FindTrees()
+        static ulong FindTrees(int across, int down)
         {
             string filename = "day3inputs.txt";
-            int trees = 0;
+            ulong trees = 0;
 
             string[] contents = File.ReadAllLines(filename);
             int linelength = contents[0].Length;
-            int pos = 3;
-            int linenum = 0;
+            int pos = across;
 
-            foreach (string line in contents)
+            for (int x = down; x < contents.Length;)
             {
-                if (linenum > 0)
+                char c = contents[x][pos];
+
+                if (c == '#')
                 {
-                    char c = line[pos];
-                    Console.WriteLine(pos);
-
-                    if (c == '#')
-                    {
-                        trees++;
-                    }
-
-                    pos = ((pos + 3) >= linelength) ? (3 - (linelength - pos)) : pos + 3;
+                    trees++;
                 }
 
-                linenum++;
+                pos = ((pos + across) >= linelength) ? (across - (linelength - pos)) : pos + across;
+                x = x + down;
             }
 
             return trees;
