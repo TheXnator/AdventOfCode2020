@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020
 {
@@ -19,6 +20,9 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 3 p. 1: {0}", FindTrees(3, 1)));
             ulong treeproduct = FindTrees(1, 1) * FindTrees(3, 1) * FindTrees(5, 1) * FindTrees(7, 1) * FindTrees(1, 2);
             Console.WriteLine(String.Format("Day 3 p. 2: {0}", treeproduct));
+
+            // Day 4
+            Console.WriteLine(String.Format("Day 4 p. 1: {0}", GetValidPassports()));
         }
 
         static int Get2020PairProduct()
@@ -122,6 +126,37 @@ namespace AdventOfCode2020
             }
 
             return trees;
+        }
+
+        static int GetValidPassports()
+        {
+            string filename = "day4inputs.txt";
+            int valid = 0;
+
+            string contents = File.ReadAllText(filename);
+            string[] data = contents.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            string[] requiredFields = new string[7] { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
+
+            foreach (string dat in data)
+            {
+                bool isValid = true;
+
+                foreach (string field in requiredFields)
+                {
+                    if (!dat.Contains(field))
+                    {
+                        isValid = false;
+                    }
+                }
+
+                if (isValid)
+                {
+                    valid++;
+                }
+            }
+
+            return valid;
         }
     }
 }
