@@ -25,6 +25,9 @@ namespace AdventOfCode2020
             // Day 4
             Console.WriteLine(String.Format("Day 4 p. 1: {0}", GetValidPassports()));
             Console.WriteLine(String.Format("Day 4 p. 2: {0}", GetValidPassportsNew()));
+
+            // Day 5
+            Console.WriteLine(String.Format("Day 5 p. 1: {0}", GetMaxBoardingPass()));
         }
 
         static int Get2020PairProduct()
@@ -227,6 +230,51 @@ namespace AdventOfCode2020
             }
 
             return valid;
+        }
+
+        static int GetMaxBoardingPass()
+        {
+            string filename = "day5inputs.txt";
+            int passid = 0;
+
+            string[] contents = File.ReadAllLines(filename);
+            foreach (string line in contents)
+            {
+                int rowmin = 0;
+                int rowmax = 127;
+                int colmin = 0;
+                int colmax = 7;
+
+                int row = 0;
+                int col = 0;
+
+                foreach (char c in line)
+                {
+                    int rowdif = rowmax - rowmin;
+                    int coldif = colmax - colmin;
+
+                    rowmin = (c == 'B') ? rowmin + (int)Math.Ceiling((double)rowdif / 2) : rowmin;
+                    rowmax = (c == 'F') ? rowmax - (int)Math.Floor((double)rowdif / 2) : rowmax;
+
+                    if (rowmin == rowmax - 1 && (c == 'F' || c == 'B'))
+                    {
+                        row = (c == 'F') ? rowmin : rowmax;
+                    }
+
+                    colmin = (c == 'R') ? colmin + (int)Math.Ceiling((double)coldif / 2) : colmin;
+                    colmax = (c == 'L') ? colmax - (int)Math.Floor((double)coldif / 2) : colmax;
+
+                    if (colmin == colmax - 1 && (c == 'R' || c == 'L'))
+                    {
+                        col = (c == 'L') ? colmin : colmax;
+                    }
+                }
+
+                int id = row * 8 + col;
+                passid = (id > passid) ? id : passid;
+            }
+
+            return passid;
         }
     }
 }
