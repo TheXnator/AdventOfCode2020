@@ -29,6 +29,10 @@ namespace AdventOfCode2020
             // Day 5
             Console.WriteLine(String.Format("Day 5 p. 1: {0}", GetMaxBoardingPass()));
             Console.WriteLine(String.Format("Day 5 p. 2: {0}", GetSeatID()));
+
+            // Day 6
+            Console.WriteLine(String.Format("Day 6 p. 1: {0}", GetCustomsQuestionSum())); 
+            Console.WriteLine(String.Format("Day 6 p. 2: {0}", GetCustomsQuestionSum(true)));
         }
 
         static int Get2020PairProduct()
@@ -281,6 +285,96 @@ namespace AdventOfCode2020
             }
 
             return 0;
+        }
+
+        static List<int> GetCustomsQuestions()
+        {
+            string filename = "day6inputs.txt";
+
+            string contents = File.ReadAllText(filename);
+            string[] data = contents.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            List<int> questions = new List<int>();
+
+            foreach (string dat in data)
+            {
+                List<char> answered = new List<char>();
+
+                foreach (string line in dat.Split("\n"))
+                {
+                    foreach (char c in line)
+                    {
+                        if (!answered.Contains(c) && Regex.IsMatch(c.ToString(), @"\w"))
+                        {
+                            answered.Add(c);
+                        }
+                    }
+                }
+
+                questions.Add(answered.Count);
+            }
+
+            return questions;
+        }
+
+        static List<int> GetAllAnsweredCustomsQuestions()
+        {
+            string filename = "day6inputs.txt";
+
+            string contents = File.ReadAllText(filename);
+            string[] data = contents.Split(new string[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            List<int> questions = new List<int>();
+
+            foreach (string dat in data)
+            {
+                List<char> answered = new List<char>();
+                List<char> answeredall = new List<char>();
+                string[] lines = dat.Split("\n");
+
+                foreach (string line in lines)
+                {
+                    foreach (char c in line)
+                    {
+                        if (Regex.IsMatch(c.ToString(), @"\w"))
+                        {
+                            answered.Add(c);
+                        }
+                    }
+                }
+
+                foreach (char c in answered)
+                {
+
+                    int count = 0;
+                    foreach (char c2 in answered)
+                    {
+                        if (c2 == c)
+                        {
+                            count++;
+                        }
+                    }
+
+                    if (count == lines.Length && (!answeredall.Contains(c)))
+                    {
+                        answeredall.Add(c);
+                    }
+                }
+
+                questions.Add(answeredall.Count);
+            }
+
+            return questions;
+        }
+
+        static int GetCustomsQuestionSum(bool all=false)
+        {
+            int sum = 0;
+
+            foreach (int i in all ? GetAllAnsweredCustomsQuestions() : GetCustomsQuestions())
+            {
+                sum += i;
+            }
+
+            return sum;
         }
     }
 }
