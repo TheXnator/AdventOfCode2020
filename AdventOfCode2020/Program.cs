@@ -31,8 +31,11 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 5 p. 2: {0}", GetSeatID()));
 
             // Day 6
-            Console.WriteLine(String.Format("Day 6 p. 1: {0}", GetCustomsQuestionSum())); 
+            Console.WriteLine(String.Format("Day 6 p. 1: {0}", GetCustomsQuestionSum()));
             Console.WriteLine(String.Format("Day 6 p. 2: {0}", GetCustomsQuestionSum(true)));
+
+            // Day 7
+            Console.WriteLine(String.Format("Day 7 p. 1: {0}", GetValidBags("shiny gold")));
         }
 
         static int Get2020PairProduct()
@@ -55,7 +58,7 @@ namespace AdventOfCode2020
                     }
                 }
             }
-            
+
             return 0;
         }
 
@@ -88,7 +91,7 @@ namespace AdventOfCode2020
             return 0;
         }
 
-        static int CheckValidPasswords(bool isnew=false)
+        static int CheckValidPasswords(bool isnew = false)
         {
             string filename = "day2inputs.txt";
             int valid = 0;
@@ -104,7 +107,7 @@ namespace AdventOfCode2020
                 int max = Convert.ToInt32(minmax[1]);
                 int count = dat[2].Split(c).Length - 1;
 
-                if ((!isnew && count >= min && count <= max) || (isnew && ((dat[2][min-1] == c && dat[2][max-1] != c) || (dat[2][max - 1] == c && dat[2][min - 1] != c))))
+                if ((!isnew && count >= min && count <= max) || (isnew && ((dat[2][min - 1] == c && dat[2][max - 1] != c) || (dat[2][max - 1] == c && dat[2][min - 1] != c))))
                 {
                     valid++;
                 }
@@ -199,7 +202,7 @@ namespace AdventOfCode2020
                     }
                     else
                     {
-                        string fieldData = dat.Split(field.Key + ":")[1].Split(new string[]{ " ", "\n" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                        string fieldData = dat.Split(field.Key + ":")[1].Split(new string[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries)[0];
                         fieldData = Regex.Escape(fieldData).Replace("\\r", "");
                         fieldData = Regex.Escape(fieldData).Replace("\\", "");
 
@@ -365,7 +368,7 @@ namespace AdventOfCode2020
             return questions;
         }
 
-        static int GetCustomsQuestionSum(bool all=false)
+        static int GetCustomsQuestionSum(bool all = false)
         {
             int sum = 0;
 
@@ -375,6 +378,51 @@ namespace AdventOfCode2020
             }
 
             return sum;
+        }
+
+        static string GetBagRow(string bag)
+        {
+            string filename = "day7inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            foreach (string line in contents)
+            {
+                if (line.Split(" bags contain")[0].Contains(bag))
+                {
+                    return line;
+                }
+            }
+
+            return "";
+        }
+
+        static int GetValidBags(string bag)
+        {
+            string filename = "day7inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            List<string> bags = new List<string>() { bag };
+            int i = 0;
+
+            while (i < bags.Count)
+            {
+                foreach (string line in contents)
+                {
+                    if (line.Contains(bags[i]))
+                    {
+                        string[] splitbag = line.Split(' ');
+                        string addBag = String.Format("{0} {1}", splitbag[0], splitbag[1]);
+                        if (!bags.Contains(addBag))
+                        {
+                            bags.Add(addBag);
+                        }
+                    }
+                }
+
+                i++;
+            }
+
+            return bags.Count - 1;
         }
     }
 }
