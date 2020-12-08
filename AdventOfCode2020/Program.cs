@@ -36,6 +36,7 @@ namespace AdventOfCode2020
 
             // Day 7
             Console.WriteLine(String.Format("Day 7 p. 1: {0}", GetValidBags("shiny gold")));
+            Console.WriteLine(String.Format("Day 7 p. 2: {0}", GetBagContents("shiny gold bag")));
         }
 
         static int Get2020PairProduct()
@@ -423,6 +424,52 @@ namespace AdventOfCode2020
             }
 
             return bags.Count - 1;
+        }
+
+        static int GetBagContents(string bag)
+        {
+            string filename = "day7inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            Dictionary<string, Dictionary<string, int>> bags = new Dictionary<string, Dictionary<string, int>>();
+            foreach (string line in contents)
+            {
+                MatchCollection bagsContents = Regex.Matches(line, @"(\w* \w*) bag");
+                string initial = bagsContents[0].Value.Trim(' ');
+                Dictionary<string, int> contentVals = new Dictionary<string, int>();
+
+                bool skip = true;
+                foreach (Match m in bagsContents)
+                {
+                    if (skip) { skip = false; continue; }
+
+                    string[] splitstr = line.Split(m.Value)[0].Trim().Split(' ');
+                    string str = splitstr[splitstr.Length - 1];
+                    if (str != "contain")
+                    {
+                        Console.WriteLine(m.Value);
+                        contentVals.Add(m.Value, Convert.ToInt32(str));
+                    }
+                }
+
+                bags[initial] = contentVals;
+            }
+
+            int BagContents(string bag)
+            {
+                int tot = 1;
+                if (bags.ContainsKey(bag))
+                {
+                    foreach (KeyValuePair<string, int> kv in bags[bag])
+                    {
+                        tot += kv.Value * BagContents(kv.Key);
+                    }
+                }
+
+                return tot;
+            }
+
+            return BagContents(bag) - 1;
         }
     }
 }
