@@ -40,7 +40,7 @@ namespace AdventOfCode2020
 
             // Day 8
             Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(File.ReadAllLines("day8inputs.txt"))));
-            Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(FixBootCode())));
+            Console.WriteLine(String.Format("Day 8 p. 2: {0}", GetAccumulator(FixBootCode())));
         }
 
         static int Get2020PairProduct()
