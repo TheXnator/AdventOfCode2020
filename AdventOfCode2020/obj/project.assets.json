@@ -8,21 +8,17 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\trexn\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\trexn\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\trexn\\Desktop\\Files\\Zac\\Advent of Code\\AdventOfCode2020\\AdventOfCode2020\\AdventOfCode2020.csproj",
+      "projectUniqueName": "C:\\Users\\trexn\\Desktop\\Code\\Advent of Code\\AdventOfCode2020\\AdventOfCode2020.csproj",
       "projectName": "AdventOfCode2020",
-      "projectPath": "C:\\Users\\trexn\\Desktop\\Files\\Zac\\Advent of Code\\AdventOfCode2020\\AdventOfCode2020\\AdventOfCode2020.csproj",
+      "projectPath": "C:\\Users\\trexn\\Desktop\\Code\\Advent of Code\\AdventOfCode2020\\AdventOfCode2020.csproj",
       "packagesPath": "C:\\Users\\trexn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\trexn\\Desktop\\Files\\Zac\\Advent of Code\\AdventOfCode2020\\AdventOfCode2020\\obj\\",
+      "outputPath": "C:\\Users\\trexn\\Desktop\\Code\\Advent of Code\\AdventOfCode2020\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
         "C:\\Users\\trexn\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -62,7 +58,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -37,6 +37,9 @@ namespace AdventOfCode2020
             // Day 7
             Console.WriteLine(String.Format("Day 7 p. 1: {0}", GetValidBags("shiny gold")));
             Console.WriteLine(String.Format("Day 7 p. 2: {0}", GetBagContents("shiny gold bag")));
+
+            // Day 8
+            Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator()));
         }
 
         static int Get2020PairProduct()
@@ -447,7 +450,6 @@ namespace AdventOfCode2020
                     string str = splitstr[splitstr.Length - 1];
                     if (str != "contain")
                     {
-                        Console.WriteLine(m.Value);
                         contentVals.Add(m.Value, Convert.ToInt32(str));
                     }
                 }
@@ -470,6 +472,39 @@ namespace AdventOfCode2020
             }
 
             return BagContents(bag) - 1;
+        }
+
+        static int GetAccumulator()
+        {
+            int acc = 0;
+
+            string filename = "day8inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            List<int> executed = new List<int>();
+            int nextExecute = 0;
+
+            while (!executed.Contains(nextExecute))
+            {
+                string cmd = contents[nextExecute].Substring(0, 3);
+                int val = Convert.ToInt32(contents[nextExecute].Split(' ')[1].Trim(' '));
+                executed.Add(nextExecute);
+
+                if (cmd == "acc")
+                {
+                    acc += val;
+                    nextExecute++;
+                }
+                else if (cmd == "jmp")
+                {
+                    nextExecute += val;
+                }
+                else
+                {
+                    nextExecute++;
+                }
+            }
+
+            return acc;
         }
     }
 }
