@@ -39,7 +39,8 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 7 p. 2: {0}", GetBagContents("shiny gold bag")));
 
             // Day 8
-            Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator()));
+            Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(File.ReadAllLines("day8inputs.txt"))));
+            Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(FixBootCode())));
         }
 
         static int Get2020PairProduct()
@@ -99,7 +100,6 @@ namespace AdventOfCode2020
         {
             string filename = "day2inputs.txt";
             int valid = 0;
-
             string[] contents = File.ReadAllLines(filename);
             foreach (string line in contents)
             {
@@ -474,16 +474,14 @@ namespace AdventOfCode2020
             return BagContents(bag) - 1;
         }
 
-        static int GetAccumulator()
+        static int GetAccumulator(string[] contents)
         {
             int acc = 0;
 
-            string filename = "day8inputs.txt";
-            string[] contents = File.ReadAllLines(filename);
             List<int> executed = new List<int>();
             int nextExecute = 0;
 
-            while (!executed.Contains(nextExecute))
+            while ((!executed.Contains(nextExecute)) && (nextExecute < contents.Length))
             {
                 string cmd = contents[nextExecute].Substring(0, 3);
                 int val = Convert.ToInt32(contents[nextExecute].Split(' ')[1].Trim(' '));
@@ -505,6 +503,71 @@ namespace AdventOfCode2020
             }
 
             return acc;
+        }
+
+        static bool CheckTerminates(string[] contents)
+        {
+            List<int> executed = new List<int>();
+            int nextExecute = 0;
+            bool terminates = false;
+
+            while ((!executed.Contains(nextExecute)) && (nextExecute < contents.Length))
+            {
+                string cmd = contents[nextExecute].Substring(0, 3);
+                int val = Convert.ToInt32(contents[nextExecute].Split(' ')[1].Trim(' '));
+                executed.Add(nextExecute);
+
+                if (cmd == "jmp")
+                {
+                    nextExecute += val;
+                }
+                else
+                {
+                    nextExecute++;
+                }
+            }
+
+            if (nextExecute >= contents.Length)
+            {
+                terminates = true;
+            }
+
+            return terminates;
+        }
+
+        static string[] FixBootCode()
+        {
+            string filename = "day8inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            string[] curContents = contents;
+            int lastChanged = -1;
+
+            while (!CheckTerminates(curContents))
+            {
+                curContents = (string[])contents.Clone();
+
+                int curline = 0;
+                bool changed = false;
+                foreach (string line in curContents)
+                {
+                    if (changed) { continue; }
+                    string cmd = contents[curline].Substring(0, 3);
+                    string val = contents[curline].Split(' ')[1].Trim(' ');
+
+                    if (curline > lastChanged && (cmd == "jmp" || cmd == "nop"))
+                    {
+                        lastChanged = curline;
+                        string newcmd = (cmd == "jmp") ? "nop" : "jmp";
+                        string newline = String.Format("{0} {1}", newcmd, val);
+                        curContents[curline] = newline;
+                        changed = true;
+                    }
+
+                    curline++;
+                }
+            }
+
+            return curContents;
         }
     }
 }
