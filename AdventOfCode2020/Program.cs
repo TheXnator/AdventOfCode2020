@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020
@@ -41,6 +42,10 @@ namespace AdventOfCode2020
             // Day 8
             Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(File.ReadAllLines("day8inputs.txt"))));
             Console.WriteLine(String.Format("Day 8 p. 2: {0}", GetAccumulator(FixBootCode())));
+
+            // Day 9G
+            Console.WriteLine(String.Format("Day 9 p. 1: {0}", GetXMASInvalidNum())); 
+            Console.WriteLine(String.Format("Day 9 p. 2: {0}", FindXMASEncryptionWeakness()));
         }
 
         static int Get2020PairProduct()
@@ -568,6 +573,68 @@ namespace AdventOfCode2020
             }
 
             return curContents;
+        }
+
+        static int GetXMASInvalidNum()
+        {
+            string filename = "day9inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            for (int i = 25; i < contents.Length - 1; i++)
+            {
+                bool valid = false;
+                int num = Convert.ToInt32(contents[i]);
+                for (int x = (i - 25); x < i; x++)
+                {
+                    for (int y = (i - 25); y < i; y++)
+                    {
+                        if (Convert.ToInt32(contents[x]) + Convert.ToInt32(contents[y]) == num)
+                        {
+                            valid = true;
+                        }
+                    }
+                }
+
+                if (!valid) { return num; }
+            }
+
+            return 0;
+        }
+
+        static int FindXMASEncryptionWeakness()
+        {
+            int requiredsum = GetXMASInvalidNum();
+
+            string filename = "day9inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            List<long> intvals = new List<long>();
+            foreach (string content in contents)
+            {
+                intvals.Add(Convert.ToInt64(content));
+            }
+
+            for (int i = 0; i < intvals.Count - 2; i++)
+            {
+                for (int x = 1; x < intvals.Count - i; x++)
+                {
+                    long sum = 0;
+                    List<long> vals = intvals.GetRange(i, x);
+
+                    foreach (long val in vals)
+                    {
+                        sum += val;
+                    }
+                    
+                    if (sum == requiredsum)
+                    {
+                        vals.Sort();
+                        return (int)(vals[0] + vals[vals.Count-1]);
+                    }
+                }
+            }
+
+            return 0;
         }
     }
 }
