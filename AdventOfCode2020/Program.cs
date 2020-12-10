@@ -43,9 +43,12 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 8 p. 1: {0}", GetAccumulator(File.ReadAllLines("day8inputs.txt"))));
             Console.WriteLine(String.Format("Day 8 p. 2: {0}", GetAccumulator(FixBootCode())));
 
-            // Day 9G
+            // Day 9
             Console.WriteLine(String.Format("Day 9 p. 1: {0}", GetXMASInvalidNum())); 
             Console.WriteLine(String.Format("Day 9 p. 2: {0}", FindXMASEncryptionWeakness()));
+
+            // Day 10
+            Console.WriteLine(String.Format("Day 10 p. 1: {0}", GetJoltDifference()));
         }
 
         static int Get2020PairProduct()
@@ -635,6 +638,29 @@ namespace AdventOfCode2020
             }
 
             return 0;
+        }
+
+        static int GetJoltDifference()
+        {
+            string filename = "day10inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            List<int> intcontents = contents.Select(int.Parse).ToList();
+            intcontents.Sort();
+
+            int joltrating = intcontents[intcontents.Count - 1] + 3;
+            intcontents.Add(joltrating);
+
+            int[] joltdifs = new int[3];
+
+            int cur = 0;
+            for (int i = 0; i < intcontents.Count; i++)
+            {
+                int dif = intcontents[i] - cur;
+                cur = intcontents[i];
+                joltdifs[dif-1] += 1;
+            }
+
+            return joltdifs[0] * joltdifs[2];
         }
     }
 }
