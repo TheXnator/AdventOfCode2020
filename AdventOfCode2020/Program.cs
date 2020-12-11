@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020
@@ -49,6 +50,10 @@ namespace AdventOfCode2020
 
             // Day 10
             Console.WriteLine(String.Format("Day 10 p. 1: {0}", GetJoltDifference()));
+            Console.WriteLine(String.Format("Day 10 p. 2: {0}", GetAdapterArrangements()));
+
+            // Day 10
+            Console.WriteLine(String.Format("Day 11 p. 1: {0}", GetOccupiedSeats()));
         }
 
         static int Get2020PairProduct()
@@ -455,7 +460,7 @@ namespace AdventOfCode2020
                     if (skip) { skip = false; continue; }
 
                     string[] splitstr = line.Split(m.Value)[0].Trim().Split(' ');
-                    string str = splitstr[splitstr.Length - 1];
+                    string str = splitstr[^1];
                     if (str != "contain")
                     {
                         contentVals.Add(m.Value, Convert.ToInt32(str));
@@ -632,7 +637,7 @@ namespace AdventOfCode2020
                     if (sum == requiredsum)
                     {
                         vals.Sort();
-                        return (int)(vals[0] + vals[vals.Count-1]);
+                        return (int)(vals[0] + vals[^1]);
                     }
                 }
             }
@@ -640,16 +645,22 @@ namespace AdventOfCode2020
             return 0;
         }
 
-        static int GetJoltDifference()
+        static List<int> GetJoltList()
         {
             string filename = "day10inputs.txt";
             string[] contents = File.ReadAllLines(filename);
             List<int> intcontents = contents.Select(int.Parse).ToList();
             intcontents.Sort();
 
-            int joltrating = intcontents[intcontents.Count - 1] + 3;
+            int joltrating = intcontents[^1] + 3;
             intcontents.Add(joltrating);
 
+            return intcontents;
+        }
+
+        static int GetJoltDifference()
+        {
+            List<int> intcontents = GetJoltList();
             int[] joltdifs = new int[3];
 
             int cur = 0;
@@ -661,6 +672,86 @@ namespace AdventOfCode2020
             }
 
             return joltdifs[0] * joltdifs[2];
+        }
+
+        static long GetAdapterArrangements()
+        {
+            List<int> intcontents = GetJoltList();
+            intcontents.Insert(0, 0);
+
+            long[] combinations = new long[intcontents.Count];
+            combinations[0] = 1;
+
+            for (int i = 1; i < intcontents.Count; i++)
+            {
+                for (int x = 1; x < 4; x++)
+                {
+                    if ((x == 1 || i > x - 1) && intcontents[i] - intcontents[i - x] <= 3)
+                    {
+                        combinations[i] += combinations[i - x];
+                    }
+                }
+            }
+
+            return combinations[intcontents.Count - 1];
+        }
+
+        static int EmptyAdjacents(string[] compare, int linenum, int curpos)
+        {
+            int count = 0;
+
+            for (int i = linenum - 1; i < linenum + 2; i++)
+            {
+                for (int x = curpos - 1; x < curpos + 2; x++)
+                {
+                    if (i == linenum && x == curpos) { continue; }
+                    bool free = i < 0 || i >= compare.Length || x < 0 || x >= compare[i].Length|| compare[i][x] != '#';
+                    if (free) { count++; }
+                }
+            }
+
+            return count;
+        }
+
+        static int GetOccupiedSeats()
+        {
+            string filename = "day11inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            bool changed = true;
+            while (changed)
+            {
+                changed = false;
+
+                string[] compare = (string[])contents.Clone();
+                int linenum = 0;
+                foreach (string line in contents)
+                {
+                    for (int i = 0; i < line.Length; i++)
+                    {
+                        if (compare[linenum][i] == 'L' && EmptyAdjacents(compare, linenum, i) == 8)
+                        {
+                            contents[linenum] = new StringBuilder(contents[linenum]) { [i] = '#' }.ToString();
+                            changed = true;
+                        }
+                        else if (compare[linenum][i] == '#' && EmptyAdjacents(compare, linenum, i) <= 4)
+                        {
+                            contents[linenum] = new StringBuilder(contents[linenum]) { [i] = 'L' }.ToString();
+                            changed = true;
+                        }
+                    }
+
+                    linenum++;
+                }
+            }
+
+            int occupiedseata = 0;
+            foreach (string line in contents)
+            {
+                occupiedseata += (line.Count(c => c == '#'));
+            }
+
+            return occupiedseata;
         }
     }
 }
