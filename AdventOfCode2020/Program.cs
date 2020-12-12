@@ -53,7 +53,8 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 10 p. 2: {0}", GetAdapterArrangements()));
 
             // Day 10
-            Console.WriteLine(String.Format("Day 11 p. 1: {0}", GetOccupiedSeats()));
+            //Console.WriteLine(String.Format("Day 11 p. 1: {0}", GetOccupiedSeats()));
+            Console.WriteLine(String.Format("Day 11 p. 2: {0}", GetOccupiedSeats(true)));
         }
 
         static int Get2020PairProduct()
@@ -713,7 +714,66 @@ namespace AdventOfCode2020
             return count;
         }
 
-        static int GetOccupiedSeats()
+        static int EmptyVisibles(string[] compare, int linenum, int pos)
+        {
+            int count = 0;
+            int linelen = compare[0].Length;
+
+            int curline = linenum;
+            int curpos = pos;
+            int dir = -1;
+
+            while (dir < 6)
+            {
+                if (dir < 2) { curline += dir; }
+                else { curpos += dir - 4; }
+
+                if (curline < 0 || curline >= compare.Length) { dir += 2; curline = linenum; count++; continue; }
+                if (curpos < 0 || curpos >= linelen) { dir += 2; curpos = pos; count++; continue; }
+
+                if (compare[curline][curpos] == '#' || compare[curline][curpos] == 'L')
+                {
+                    if (compare[curline][curpos] == 'L') { count++; }
+                    dir += 2;
+
+                    curline = linenum;
+                    curpos = pos;
+                }
+            }
+
+            int dirr;
+            int diru;
+            for (int i = 0; i < 4; i++)
+            {
+                curline = linenum;
+                curpos = pos;
+
+                dirr = (i >= 2) ? -1 : 1;
+                diru = (i == 1 || i == 2) ? -1 : 1;
+
+                bool found = false;
+                while (curpos >= 0 && curpos < linelen && curline >= 0 && curline < compare.Length && !found)
+                {
+                    curpos += dirr;
+                    curline += diru;
+
+                    if (curline < 0 || curline >= compare.Length) { found = true; curline = linenum; count++; continue; }
+                    if (curpos < 0 || curpos >= linelen) { found = true; curpos = pos; count++; continue; }
+
+                    if (compare[curline][curpos] == '#' || compare[curline][curpos] == 'L')
+                    {
+                        if (compare[curline][curpos] == 'L') { count++; }
+                        curline = linenum;
+                        curpos = pos;
+                        found = true;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        static int GetOccupiedSeats(bool visibles=false)
         {
             string filename = "day11inputs.txt";
             string[] contents = File.ReadAllLines(filename);
@@ -729,12 +789,15 @@ namespace AdventOfCode2020
                 {
                     for (int i = 0; i < line.Length; i++)
                     {
-                        if (compare[linenum][i] == 'L' && EmptyAdjacents(compare, linenum, i) == 8)
+                        if (compare[linenum][i] == '.') { continue; }
+                        int empties = visibles ? EmptyVisibles(compare, linenum, i) : EmptyAdjacents(compare, linenum, i);
+
+                        if (compare[linenum][i] == 'L' && empties == 8)
                         {
                             contents[linenum] = new StringBuilder(contents[linenum]) { [i] = '#' }.ToString();
                             changed = true;
                         }
-                        else if (compare[linenum][i] == '#' && EmptyAdjacents(compare, linenum, i) <= 4)
+                        else if (compare[linenum][i] == '#' && empties <= (visibles ? 3 : 4))
                         {
                             contents[linenum] = new StringBuilder(contents[linenum]) { [i] = 'L' }.ToString();
                             changed = true;
@@ -745,13 +808,13 @@ namespace AdventOfCode2020
                 }
             }
 
-            int occupiedseata = 0;
+            int occupiedseats = 0;
             foreach (string line in contents)
             {
-                occupiedseata += (line.Count(c => c == '#'));
+                occupiedseats += (line.Count(c => c == '#'));
             }
 
-            return occupiedseata;
+            return occupiedseats;
         }
     }
 }
