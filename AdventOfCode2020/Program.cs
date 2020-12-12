@@ -52,9 +52,12 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 10 p. 1: {0}", GetJoltDifference()));
             Console.WriteLine(String.Format("Day 10 p. 2: {0}", GetAdapterArrangements()));
 
-            // Day 10
-            //Console.WriteLine(String.Format("Day 11 p. 1: {0}", GetOccupiedSeats()));
+            // Day 11
+            Console.WriteLine(String.Format("Day 11 p. 1: {0}", GetOccupiedSeats()));
             Console.WriteLine(String.Format("Day 11 p. 2: {0}", GetOccupiedSeats(true)));
+
+            // Day 12
+            Console.WriteLine(String.Format("Day 12 p. 1: {0}", GetManhattanDistance()));
         }
 
         static int Get2020PairProduct()
@@ -815,6 +818,45 @@ namespace AdventOfCode2020
             }
 
             return occupiedseats;
+        }
+
+        static int GetManhattanDistance()
+        {
+            string filename = "day12inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            string facing = "E";
+            int nspos = 0;
+            int ewpos = 0;
+
+            foreach (string line in contents)
+            {
+                char action = line[0];
+                int val = Convert.ToInt32(line.Substring(1));
+
+                if (action == 'N' || action == 'S') { nspos += (action == 'N') ? val : -val; }
+                if (action == 'E' || action == 'W') { ewpos += (action == 'E') ? val : -val; }
+
+                if (action == 'L' || action == 'R')
+                {
+                    int turns = (int)Math.Floor((decimal)val / 90);
+
+                    for (int i = 0; i < turns; i++)
+                    {
+                        if (action == 'L') { facing = (facing == "N") ? "W" : (facing == "W" ? "S" : (facing == "S" ? "E" : "N")); }
+                        if (action == 'R') { facing = (facing == "N") ? "E" : (facing == "E" ? "S" : (facing == "S" ? "W" : "N")); }
+                    }
+                }
+
+                if (action == 'F')
+                {
+                    if (facing == "N" || facing == "S") { nspos += (facing == "N") ? val : -val; }
+                    if (facing == "E" || facing == "W") { ewpos += (facing == "E") ? val : -val; }
+                }
+
+                Console.WriteLine(val);
+            }
+
+            return Math.Abs(nspos) + Math.Abs(ewpos);
         }
     }
 }
