@@ -59,6 +59,9 @@ namespace AdventOfCode2020
             // Day 12
             Console.WriteLine(String.Format("Day 12 p. 1: {0}", GetManhattanDistance()));
             Console.WriteLine(String.Format("Day 12 p. 2: {0}", GetManhattanWaypoint()));
+
+            // Day 13
+            Console.WriteLine(String.Format("Day 13 p. 1: {0}", GetEarliestBus()));
         }
 
         static int Get2020PairProduct()
@@ -897,6 +900,37 @@ namespace AdventOfCode2020
             }
 
             return Math.Abs(boatnspos) + Math.Abs(boatewpos);
+        }
+
+        static int GetEarliestBus()
+        {
+            string filename = "day13inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+
+            int arrivaltim = Convert.ToInt32(contents[0]);
+            string[] buses = contents[1].Split(',');
+            int closest = 0;
+            int closestid = 0;
+
+            foreach (string bus in buses)
+            {
+                if (bus == "x") { continue; }
+                int busid = Convert.ToInt32(bus);
+                int tim = 0;
+
+                while (tim < arrivaltim)
+                {
+                    tim += busid;
+                }
+
+                if (closest == 0 || tim < closest)
+                {
+                    closest = tim;
+                    closestid = busid;
+                }
+            }
+
+            return closestid * (closest - arrivaltim);
         }
     }
 }
