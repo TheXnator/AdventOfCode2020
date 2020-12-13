@@ -58,6 +58,7 @@ namespace AdventOfCode2020
 
             // Day 12
             Console.WriteLine(String.Format("Day 12 p. 1: {0}", GetManhattanDistance()));
+            Console.WriteLine(String.Format("Day 12 p. 2: {0}", GetManhattanWaypoint()));
         }
 
         static int Get2020PairProduct()
@@ -852,11 +853,50 @@ namespace AdventOfCode2020
                     if (facing == "N" || facing == "S") { nspos += (facing == "N") ? val : -val; }
                     if (facing == "E" || facing == "W") { ewpos += (facing == "E") ? val : -val; }
                 }
-
-                Console.WriteLine(val);
             }
 
             return Math.Abs(nspos) + Math.Abs(ewpos);
+        }
+
+        static int GetManhattanWaypoint()
+        {
+            string filename = "day12inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            int boatnspos = 0;
+            int boatewpos = 0;
+            int nspos = 1;
+            int ewpos = 10;
+
+            foreach (string line in contents)
+            {
+                char action = line[0];
+                int val = Convert.ToInt32(line.Substring(1));
+
+                if (action == 'N' || action == 'S') { nspos += (action == 'N') ? val : -val; }
+                if (action == 'E' || action == 'W') { ewpos += (action == 'E') ? val : -val; }
+
+                if (action == 'L' || action == 'R')
+                {
+                    int turns = (int)Math.Floor((decimal)val / 90);
+
+                    for (int i = 0; i < turns; i++)
+                    {
+                        int oldns = nspos;
+                        int oldew = ewpos;
+                        nspos = action == 'R' ? -oldew : oldew;
+                        ewpos = action == 'R' ? oldns : -oldns;
+                    }
+                }
+
+                if (action == 'F')
+                {
+                    // Move to waypoint
+                    boatnspos += nspos * val;
+                    boatewpos += ewpos * val;
+                }
+            }
+
+            return Math.Abs(boatnspos) + Math.Abs(boatewpos);
         }
     }
 }
