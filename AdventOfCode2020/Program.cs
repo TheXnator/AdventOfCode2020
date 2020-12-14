@@ -62,6 +62,7 @@ namespace AdventOfCode2020
 
             // Day 13
             Console.WriteLine(String.Format("Day 13 p. 1: {0}", GetEarliestBus()));
+            Console.WriteLine(String.Format("Day 13 p. 2: {0}", GetBusTimestamp()));
         }
 
         static int Get2020PairProduct()
@@ -922,7 +923,7 @@ namespace AdventOfCode2020
                 {
                     tim += busid;
                 }
-
+                
                 if (closest == 0 || tim < closest)
                 {
                     closest = tim;
@@ -931,6 +932,37 @@ namespace AdventOfCode2020
             }
 
             return closestid * (closest - arrivaltim);
+        }
+
+        static ulong GetBusTimestamp()
+        {
+            string filename = "day13inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            string[] buses = contents[1].Split(',');
+            List<List<ulong>> buslst = new List<List<ulong>>();
+
+            ulong off = 0;
+            foreach (string bus in buses)
+            {
+                if (bus == "x") { off++; continue;  }
+                buslst.Add(new List<ulong>() { Convert.ToUInt64(bus), off });
+                off++;
+            }
+
+            ulong tim = 0;
+            ulong s = 1;
+
+            foreach (List<ulong> vals in buslst)
+            {
+                while ((tim + vals[1]) % vals[0] != 0)
+                {
+                    tim += s;
+                }
+
+                s *= vals[0];
+            }
+
+            return tim;
         }
     }
 }
