@@ -63,6 +63,9 @@ namespace AdventOfCode2020
             // Day 13
             Console.WriteLine(String.Format("Day 13 p. 1: {0}", GetEarliestBus()));
             Console.WriteLine(String.Format("Day 13 p. 2: {0}", GetBusTimestamp()));
+
+            // Day 14
+            Console.WriteLine(String.Format("Day 13 p. 1: {0}", GetDockingMem()));
         }
 
         static int Get2020PairProduct()
@@ -963,6 +966,51 @@ namespace AdventOfCode2020
             }
 
             return tim;
+        }
+
+        static ulong GetDockingMem()
+        {
+            string filename = "day14inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            string curmask = "";
+            Dictionary<int, ulong> memory = new Dictionary<int, ulong>();
+
+            foreach (string line in contents)
+            {
+                if (line.Contains("mask"))
+                {
+                    curmask = line.Split("mask = ")[1];
+                }
+                else
+                {
+                    string[] splitstr = line.Split(" = ");
+                    string memrow = splitstr[0].Split('[')[1];
+                    int memaddr = Convert.ToInt32(memrow.Substring(0, memrow.Length - 1));
+                    int val = Convert.ToInt32(splitstr[1]);
+                    string binaryval = Convert.ToString(val, 2);
+                    string paddedbin = binaryval.PadLeft(36, '0');
+
+                    for (int i = 0; i < paddedbin.Length; i++)
+                    {
+                        if (curmask[i] == 'X') { continue; }
+
+                        StringBuilder sb = new StringBuilder(paddedbin);
+                        sb[i] = curmask[i];
+                        paddedbin = sb.ToString();
+                    }
+
+                    ulong newval = Convert.ToUInt64(paddedbin, 2);
+                    memory[memaddr] = newval;
+                }
+            }
+
+            ulong rtn = 0;
+            foreach (KeyValuePair<int, ulong> kv in memory)
+            {
+                rtn += kv.Value;
+            }
+
+            return rtn;
         }
     }
 }
