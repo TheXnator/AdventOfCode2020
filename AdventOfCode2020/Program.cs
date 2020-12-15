@@ -65,7 +65,8 @@ namespace AdventOfCode2020
             Console.WriteLine(String.Format("Day 13 p. 2: {0}", GetBusTimestamp()));
 
             // Day 14
-            Console.WriteLine(String.Format("Day 13 p. 1: {0}", GetDockingMem()));
+            Console.WriteLine(String.Format("Day 14 p. 1: {0}", GetDockingMem()));
+            Console.WriteLine(String.Format("Day 14 p. 2: {0}", GetDockingMemV2()));
         }
 
         static int Get2020PairProduct()
@@ -992,7 +993,7 @@ namespace AdventOfCode2020
 
                     for (int i = 0; i < paddedbin.Length; i++)
                     {
-                        if (curmask[i] == 'X') { continue; }
+                        if (curmask[i] == 'X') { continue;  }
 
                         StringBuilder sb = new StringBuilder(paddedbin);
                         sb[i] = curmask[i];
@@ -1008,6 +1009,78 @@ namespace AdventOfCode2020
             foreach (KeyValuePair<int, ulong> kv in memory)
             {
                 rtn += kv.Value;
+            }
+
+            return rtn;
+        }
+
+        static ulong GetDockingMemV2()
+        {
+            string filename = "day14inputs.txt";
+            string[] contents = File.ReadAllLines(filename);
+            string curmask = "";
+            Dictionary<ulong, int> memory = new Dictionary<ulong, int>();
+
+            foreach (string line in contents)
+            {
+                if (line.Contains("mask"))
+                {
+                    curmask = line.Split("mask = ")[1];
+                }
+                else
+                {
+                    string[] splitstr = line.Split(" = ");
+                    string memrow = splitstr[0].Split('[')[1];
+                    int memaddr = Convert.ToInt32(memrow.Substring(0, memrow.Length - 1));
+                    int val = Convert.ToInt32(splitstr[1]);
+                    string binaryval = Convert.ToString(memaddr, 2);
+                    string paddedbin = binaryval.PadLeft(36, '0');
+
+                    for (int i = 0; i < paddedbin.Length; i++)
+                    {
+                        if (curmask[i] == '0') { continue; }
+
+                        StringBuilder sb = new StringBuilder(paddedbin);
+                        sb[i] = curmask[i];
+                        paddedbin = sb.ToString();
+                    }
+
+                    int numx = paddedbin.Count(c => c == 'X');
+                    int possible = (int)Math.Pow(2, numx);
+                    for (int i = 0; i < possible; i++)
+                    {
+                        string bin = Convert.ToString(i, 2).PadLeft(numx, '0');
+
+                        string newstr = paddedbin;
+                        int lastpos = -1;
+                        foreach (char c in bin)
+                        {
+                            int pos = 0;
+                            foreach (char c2 in paddedbin)
+                            {
+                                if (pos > lastpos && c2 == 'X')
+                                {
+                                    StringBuilder sb = new StringBuilder(newstr);
+                                    sb[pos] = c;
+                                    newstr = sb.ToString();
+                                    lastpos = pos;
+                                    break;
+                                }
+
+                                pos++;
+                            }
+                        }
+
+                        ulong newval = Convert.ToUInt64(newstr, 2);
+                        memory[newval] = val;
+                    }
+                }
+            }
+
+            ulong rtn = 0;
+            foreach (KeyValuePair<ulong, int> kv in memory)
+            {
+                rtn += (ulong)kv.Value;
             }
 
             return rtn;
