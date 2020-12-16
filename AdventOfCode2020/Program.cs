@@ -67,6 +67,9 @@ namespace AdventOfCode2020
             // Day 14
             Console.WriteLine(String.Format("Day 14 p. 1: {0}", GetDockingMem()));
             Console.WriteLine(String.Format("Day 14 p. 2: {0}", GetDockingMemV2()));
+
+            // Day 15
+            Console.WriteLine(String.Format("Day 15 p. 1: {0}", Get2020Number()));
         }
 
         static int Get2020PairProduct()
@@ -1084,6 +1087,34 @@ namespace AdventOfCode2020
             }
 
             return rtn;
+        }
+
+        static int Get2020Number()
+        {
+            List<int> nums = new List<int>() { 20, 9, 11, 0, 1, 2 };
+
+            for (int i = nums.Count - 1; i < 2019; i++)
+            {
+                List<int> lastlist = nums.GetRange(0, nums.Count - 1);
+                if (!lastlist.Contains(nums[^1]))
+                {
+                    nums.Add(0);
+                }
+                else
+                {
+                    int fromend = 2;
+                    int count = 1;
+                    while (nums[^fromend] != nums[^1])
+                    {
+                        fromend++;
+                        count++;
+                    }
+
+                    nums.Add(count);
+                }
+            }
+
+            return nums[^1];
         }
     }
 }
