@@ -70,6 +70,7 @@ namespace AdventOfCode2020
 
             // Day 15
             Console.WriteLine(String.Format("Day 15 p. 1: {0}", Get2020Number()));
+            Console.WriteLine(String.Format("Day 15 p. 2: {0}", Get2020Number(30000000)));
         }
 
         static int Get2020PairProduct()
@@ -1089,32 +1090,29 @@ namespace AdventOfCode2020
             return rtn;
         }
 
-        static int Get2020Number()
+        static int Get2020Number(int findval=2020)
         {
             List<int> nums = new List<int>() { 20, 9, 11, 0, 1, 2 };
 
-            for (int i = nums.Count - 1; i < 2019; i++)
+            Dictionary<int, int> lastvals = new Dictionary<int, int>();
+            int a = 0;
+            foreach (int x in nums)
             {
-                List<int> lastlist = nums.GetRange(0, nums.Count - 1);
-                if (!lastlist.Contains(nums[^1]))
-                {
-                    nums.Add(0);
-                }
-                else
-                {
-                    int fromend = 2;
-                    int count = 1;
-                    while (nums[^fromend] != nums[^1])
-                    {
-                        fromend++;
-                        count++;
-                    }
+                if (a == nums.Count - 1) { break; }
 
-                    nums.Add(count);
-                }
+                lastvals[x] = a;
+                a++;
             }
 
-            return nums[^1];
+            int rtn = nums[^1];
+            for (int i = nums.Count - 1; i < (findval-1); i++)
+            {
+                int val = lastvals.ContainsKey(rtn) ? (i - lastvals[rtn]) : 0;
+                lastvals[rtn] = i;
+                rtn = val;
+            }
+
+            return rtn;
         }
     }
 }
